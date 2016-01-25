@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Ultrasonic;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -23,30 +24,70 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
 	Talon garage;
-	private int mode = 1; // initialize default mode
+	private int mode = 0; // initialize default mode
 	SendableChooser chooser;
+	private int mode2 = 0; // initialize default mode
+	SendableChooser chooser2;
 	int timerCounter;
-	RobotDrive myDrive;
-	Joystick moveStick, rotateStick;
+	Joystick stick;
+	RobotDrive chasisMotors;
+	Ultrasonic ultrasonic = new Ultrasonic(1, 2);
 	
     public void robotInit() {
     	NetworkTable.initialize();
     	garage = new Talon(4);
     	chooser = new SendableChooser();
-    	chooser.addDefault("Command 1", 1);
-    	chooser.addObject("Command 2", 2);
-    	SmartDashboard.putData("Autonomous Selector", chooser);
-    	myDrive = new RobotDrive(0, 1, 2, 3);
-    	moveStick = new Joystick(0);
-    	rotateStick = new Joystick(1);
+    	chooser2 = new SendableChooser();
+    	SmartDashboard.putData("Autonomous Defense Selector", chooser);
+    	chooser.addDefault("Position 1", 1);
+    	chooser.addObject("Position 2", 2);
+    	chooser.addObject("Position 3", 3);
+    	chooser.addObject("Position 4", 4);
+    	chooser.addObject("Position 5", 5);
+    	SmartDashboard.putData("Autonomous Position Selector", chooser2);
+    	chooser2.addDefault("Moat", 1);
+    	chooser2.addObject("Ramp", 2);
+    	chooser2.addObject("Rock Wall", 3);
+    	chooser2.addObject("Rough Terrain", 4);
+    	ultrasonic.setAutomaticMode(true);
+    	chasisMotors = new RobotDrive(2,3,0,1);
+    	stick = new Joystick(0);
     }
 
 public void autonomousInit() {
         mode = (int) chooser.getSelected();
+        mode2 = (int) chooser2.getSelected();
     }
     public void autonomousPeriodic() {
+    	SmartDashboard.putNumber("Ultrasonic Value", ultrasonic.getRangeInches());
+    		switch(mode2) {
+        		case 1:
+        			System.out.println("positionprint");
+        			for (timerCounter = 0; timerCounter < 1500; timerCounter++) //sets the limits for the timer
+        			{
+        				if (timerCounter < 200)
+        			{
+    				//chasisMotors.arcadeDrive(-0.65, 0.0); //forward and reset
+        				garage.set(-1);
+        			}
+        			Timer.delay(0.01);
+        		}
+        		break;
+        		case 2:
+        			for (timerCounter = 0; timerCounter < 1500; timerCounter++) //sets the limits for the timer
+        			{
+        				if (timerCounter < 200)
+        				{	
+    				//chasisMotors.arcadeDrive(-0.65, 0.0); //forward and reset
+        				garage.set(-1);
+        			}
+        			Timer.delay(0.01);
+        		}
+        		break;
+    		}
     	switch(mode) {
         case 1:
+        	System.out.println("defenseprint");
         	for (timerCounter = 0; timerCounter < 1500; timerCounter++) //sets the limits for the timer
     		{
     			if (timerCounter < 200)
@@ -69,14 +110,20 @@ public void autonomousInit() {
     		}
         	break;
     	}
-    	
-    }
+    	}
 
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-    	myDrive.mecanumDrive_Cartesian(moveStick.getY(), moveStick.getX(), rotateStick.getX(), 0);
+    	if (stick.getRawButton(2)) {
+            chasisMotors.arcadeDrive(stick);
+        	 }
+        	 else {
+        			double rotation = stick.getY();
+        			double speed = stick.getX();
+        			chasisMotors.arcadeDrive(rotation*0.75, speed*0.75);
+        	 }
     }
     
     /**
