@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -24,6 +25,7 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
 	Talon garage;
+	Spark something;
 	private int mode = 0; // initialize default mode
 	SendableChooser chooser;
 	private int mode2 = 0; // initialize default mode
@@ -36,6 +38,7 @@ public class Robot extends IterativeRobot {
     public void robotInit() {
     	NetworkTable.initialize();
     	garage = new Talon(4);
+    	something = new Spark(5);
     	chooser = new SendableChooser();
     	chooser2 = new SendableChooser();
     	SmartDashboard.putData("Autonomous Defense Selector", chooser);
@@ -63,7 +66,7 @@ public void autonomousInit() {
     		switch(mode2) {
         		case 1:
         			System.out.println("positionprint");
-        			for (timerCounter = 0; timerCounter < 1500; timerCounter++) //sets the limits for the timer
+        			for (timerCounter = 0; timerCounter < 400; timerCounter++) //sets the limits for the timer
         			{
         				if (timerCounter < 200)
         			{
@@ -74,7 +77,40 @@ public void autonomousInit() {
         		}
         		break;
         		case 2:
-        			for (timerCounter = 0; timerCounter < 1500; timerCounter++) //sets the limits for the timer
+        			for (timerCounter = 0; timerCounter < 400; timerCounter++) //sets the limits for the timer
+        			{
+        				if (timerCounter < 200)
+        				{	
+    				//chasisMotors.arcadeDrive(-0.65, 0.0); //forward and reset
+        				garage.set(-1);
+        			}
+        			Timer.delay(0.01);
+        		}
+        		break;
+        		case 3:
+        			for (timerCounter = 0; timerCounter < 400; timerCounter++) //sets the limits for the timer
+        			{
+        				if (timerCounter < 200)
+        				{	
+    				//chasisMotors.arcadeDrive(-0.65, 0.0); //forward and reset
+        				garage.set(-1);
+        			}
+        			Timer.delay(0.01);
+        		}
+        		break;
+        		case 4:
+        			for (timerCounter = 0; timerCounter < 400; timerCounter++) //sets the limits for the timer
+        			{
+        				if (timerCounter < 200)
+        				{	
+    				//chasisMotors.arcadeDrive(-0.65, 0.0); //forward and reset
+        				garage.set(-1);
+        			}
+        			Timer.delay(0.01);
+        		}
+        		break;
+        		case 5:
+        			for (timerCounter = 0; timerCounter < 400; timerCounter++) //sets the limits for the timer
         			{
         				if (timerCounter < 200)
         				{	
@@ -88,7 +124,7 @@ public void autonomousInit() {
     	switch(mode) {
         case 1:
         	System.out.println("defenseprint");
-        	for (timerCounter = 0; timerCounter < 1500; timerCounter++) //sets the limits for the timer
+        	for (timerCounter = 400; timerCounter < 1500; timerCounter++) //sets the limits for the timer
     		{
     			if (timerCounter < 200)
     			{
@@ -99,7 +135,29 @@ public void autonomousInit() {
     		}
         	break;
         case 2:
-        	for (timerCounter = 0; timerCounter < 1500; timerCounter++) //sets the limits for the timer
+        	for (timerCounter = 400; timerCounter < 1500; timerCounter++) //sets the limits for the timer
+    		{
+    			if (timerCounter < 200)
+    			{
+    				//chasisMotors.arcadeDrive(-0.65, 0.0); //forward and reset
+    				garage.set(-1);
+    			}
+    			Timer.delay(0.01);
+    		}
+        	break;
+        case 3:
+        	for (timerCounter = 400; timerCounter < 1500; timerCounter++) //sets the limits for the timer
+    		{
+    			if (timerCounter < 200)
+    			{
+    				//chasisMotors.arcadeDrive(-0.65, 0.0); //forward and reset
+    				garage.set(-1);
+    			}
+    			Timer.delay(0.01);
+    		}
+        	break;
+        case 4:
+        	for (timerCounter = 400; timerCounter < 1500; timerCounter++) //sets the limits for the timer
     		{
     			if (timerCounter < 200)
     			{
