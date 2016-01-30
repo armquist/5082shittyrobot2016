@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.Ultrasonic;
  * functions corresponding to each mode, as described in the IterativeRobot
  * documentation. If you change the name of this class or the package after
  * creating this project, you must also update the manifest file in the resource
- * directory.b
+ * directory.
  */
 public class Robot extends IterativeRobot {
     /**
@@ -53,7 +53,7 @@ public class Robot extends IterativeRobot {
     	chooser2.addObject("Rock Wall", 3);
     	chooser2.addObject("Rough Terrain", 4);
     	ultrasonic.setAutomaticMode(true);
-    	chasisMotors = new RobotDrive(2,3,0,1);
+    	chasisMotors = new RobotDrive(2,3,4,1);;
     	stick = new Joystick(0);
     }
 
@@ -71,7 +71,7 @@ public void autonomousInit() {
         				if (timerCounter < 200)
         			{
     				//chasisMotors.arcadeDrive(-0.65, 0.0); //forward and reset
-        				garage.set(-1);
+        				//garage.set(-1);
         			}
         			Timer.delay(0.01);
         		}
@@ -82,7 +82,7 @@ public void autonomousInit() {
         				if (timerCounter < 200)
         				{	
     				//chasisMotors.arcadeDrive(-0.65, 0.0); //forward and reset
-        				garage.set(-1);
+        				//garage.set(-1);
         			}
         			Timer.delay(0.01);
         		}
@@ -93,7 +93,7 @@ public void autonomousInit() {
         				if (timerCounter < 200)
         				{	
     				//chasisMotors.arcadeDrive(-0.65, 0.0); //forward and reset
-        				garage.set(-1);
+        				//garage.set(-1);
         			}
         			Timer.delay(0.01);
         		}
@@ -104,7 +104,7 @@ public void autonomousInit() {
         				if (timerCounter < 200)
         				{	
     				//chasisMotors.arcadeDrive(-0.65, 0.0); //forward and reset
-        				garage.set(-1);
+        				//garage.set(-1);
         			}
         			Timer.delay(0.01);
         		}
@@ -115,7 +115,7 @@ public void autonomousInit() {
         				if (timerCounter < 200)
         				{	
     				//chasisMotors.arcadeDrive(-0.65, 0.0); //forward and reset
-        				garage.set(-1);
+        				//garage.set(-1);
         			}
         			Timer.delay(0.01);
         		}
@@ -129,7 +129,7 @@ public void autonomousInit() {
     			if (timerCounter < 200)
     			{
     				//chasisMotors.arcadeDrive(-0.65, 0.0); //forward and reset
-    				garage.set(-1);
+    				//garage.set(-1);
     			}
     			Timer.delay(0.01);
     		}
@@ -140,7 +140,7 @@ public void autonomousInit() {
     			if (timerCounter < 200)
     			{
     				//chasisMotors.arcadeDrive(-0.65, 0.0); //forward and reset
-    				garage.set(-1);
+    				//garage.set(-1);
     			}
     			Timer.delay(0.01);
     		}
@@ -151,7 +151,7 @@ public void autonomousInit() {
     			if (timerCounter < 200)
     			{
     				//chasisMotors.arcadeDrive(-0.65, 0.0); //forward and reset
-    				garage.set(-1);
+    				//garage.set(-1);
     			}
     			Timer.delay(0.01);
     		}
@@ -162,7 +162,7 @@ public void autonomousInit() {
     			if (timerCounter < 200)
     			{
     				//chasisMotors.arcadeDrive(-0.65, 0.0); //forward and reset
-    				garage.set(-1);
+    				//garage.set(-1);
     			}
     			Timer.delay(0.01);
     		}
@@ -174,14 +174,17 @@ public void autonomousInit() {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-    	if (stick.getRawButton(2)) {
-            chasisMotors.arcadeDrive(stick);
+    	if (stick.getRawButton(2)) { 
+    		double rotation = stick.getY();
+			double speed = stick.getX();
+    		chasisMotors.arcadeDrive(rotation*1.00, speed*-1.00);
         	 }
         	 else {
         			double rotation = stick.getY();
         			double speed = stick.getX();
-        			chasisMotors.arcadeDrive(rotation*0.75, speed*0.75);
+        			chasisMotors.arcadeDrive(rotation*0.75, speed*-0.75);
         	 }
+        	 
     }
     
     /**
