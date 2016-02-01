@@ -25,7 +25,8 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
 	Talon garage;
-	Spark something;
+	Spark ballLift;
+	Spark ballLift2;
 	private int mode = 0; // initialize default mode
 	SendableChooser chooser;
 	private int mode2 = 0; // initialize default mode
@@ -37,8 +38,9 @@ public class Robot extends IterativeRobot {
 	
     public void robotInit() {
     	NetworkTable.initialize();
-    	garage = new Talon(4);
-    	something = new Spark(5);
+    	garage = new Talon(6);
+    	ballLift = new Spark(4);
+    	ballLift2 = new Spark(5);
     	chooser = new SendableChooser();
     	chooser2 = new SendableChooser();
     	SmartDashboard.putData("Autonomous Defense Selector", chooser);
@@ -53,7 +55,7 @@ public class Robot extends IterativeRobot {
     	chooser2.addObject("Rock Wall", 3);
     	chooser2.addObject("Rough Terrain", 4);
     	ultrasonic.setAutomaticMode(true);
-    	chasisMotors = new RobotDrive(2,3,4,1);;
+    	chasisMotors = new RobotDrive(2,3,4,1);
     	stick = new Joystick(0);
     }
 
@@ -178,20 +180,43 @@ public void autonomousInit() {
     		double rotation = stick.getY();
 			double speed = stick.getX();
     		chasisMotors.arcadeDrive(rotation*1.00, speed*-1.00);
+    		if (stick.getRawButton(6)) {
+            	ballLift.set(1); //up
+            	ballLift2.set(1); //up
+            }
+            else if (stick.getRawButton(4)) {
+            	ballLift.set(-1); //down
+            	ballLift2.set(-1); //up
+            }
+            else {
+	        	ballLift.set(0); //down
+	        	ballLift2.set(0); //up
+	        }
         	 }
         	 else {
         			double rotation = stick.getY();
         			double speed = stick.getX();
         			chasisMotors.arcadeDrive(rotation*0.75, speed*-0.75);
+        			if (stick.getRawButton(6)) {
+        	        	ballLift.set(0.6); //up
+        	        	ballLift2.set(0.6); //up
+        	        }
+        	        else if (stick.getRawButton(4)) {
+        	        	ballLift.set(-0.6); //down
+        	        	ballLift2.set(-0.6); //up
+        	        }
+        	        else {
+        	        	ballLift.set(0); //down
+        	        	ballLift2.set(0); //up
+        	        }
         	 }
-        	 
     }
     
     /**
      * This function is called periodically during test mode
      */
     public void testPeriodic() {
-    
+   
     }
     
 }
