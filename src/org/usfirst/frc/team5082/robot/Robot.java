@@ -24,7 +24,7 @@ public class Robot extends IterativeRobot {
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
-	Talon garage;
+	//Talon garage;
 	Spark ballLift;
 	Spark ballLift2;
 	private int mode = 0; // initialize default mode
@@ -33,13 +33,14 @@ public class Robot extends IterativeRobot {
 	SendableChooser chooser2;
 	int timerCounter;
 	Joystick stick;
-	RobotDrive chasisMotors;
+	//RobotDrive chasisMotors;
 	Ultrasonic ultrasonic = new Ultrasonic(1, 2);
+	int gogogo;
 	
     public void robotInit() {
     	NetworkTable.initialize();
-    	garage = new Talon(6);
-    	ballLift = new Spark(4);
+    	//garage = new Talon(6);
+    	ballLift = new Spark(6);
     	ballLift2 = new Spark(5);
     	chooser = new SendableChooser();
     	chooser2 = new SendableChooser();
@@ -55,8 +56,9 @@ public class Robot extends IterativeRobot {
     	chooser2.addObject("Rock Wall", 3);
     	chooser2.addObject("Rough Terrain", 4);
     	ultrasonic.setAutomaticMode(true);
-    	chasisMotors = new RobotDrive(2,3,4,1);
+    	//chasisMotors = new RobotDrive(2,3,4,1);
     	stick = new Joystick(0);
+    	gogogo = 0;
     }
 
 public void autonomousInit() {
@@ -170,7 +172,7 @@ public void autonomousInit() {
     		}
         	break;
     	}
-    	}
+    }
 
     /**
      * This function is called periodically during operator control
@@ -179,37 +181,65 @@ public void autonomousInit() {
     	if (stick.getRawButton(2)) { 
     		double rotation = stick.getY();
 			double speed = stick.getX();
-    		chasisMotors.arcadeDrive(rotation*1.00, speed*-1.00);
+    //chasisMotors.arcadeDrive(rotation*1.00, speed*-1.00);
     		if (stick.getRawButton(6)) {
-            	ballLift.set(1); //up
-            	ballLift2.set(1); //up
+    			while (gogogo == 0) {
+    			ballLift.set(0.4); //up
+            	ballLift2.set(0.4); //up
+            	Timer.delay(0.5);
+            	ballLift.set(0.55); //up
+            	ballLift2.set(0.55); //up
+            	Timer.delay(0.5);
+            	gogogo = 1;
+    			}
+            	while (gogogo == 1 && stick.getRawButton(6)) {
+            	ballLift.set(0.75); //up
+            	ballLift2.set(0.75); //up
+            	}
             }
             else if (stick.getRawButton(4)) {
-            	ballLift.set(-1); //down
-            	ballLift2.set(-1); //up
+            	while (gogogo == 0) {
+            	ballLift.set(-0.4); //up
+            	ballLift2.set(-0.4); //up
+            	Timer.delay(0.5);
+            	ballLift.set(-0.55); //up
+            	ballLift2.set(-0.55); //up
+            	Timer.delay(0.5);
+            	gogogo = 1;
+            	}
+            	while (gogogo == 1 && stick.getRawButton(4)) {
+                	ballLift.set(-0.75); //up
+                	ballLift2.set(-0.75); //up
+                	}
             }
             else {
 	        	ballLift.set(0); //down
 	        	ballLift2.set(0); //up
+	        	gogogo = 0;
 	        }
-        	 }
-        	 else {
-        			double rotation = stick.getY();
-        			double speed = stick.getX();
-        			chasisMotors.arcadeDrive(rotation*0.75, speed*-0.75);
-        			if (stick.getRawButton(6)) {
-        	        	ballLift.set(0.6); //up
-        	        	ballLift2.set(0.6); //up
-        	        }
-        	        else if (stick.getRawButton(4)) {
-        	        	ballLift.set(-0.6); //down
-        	        	ballLift2.set(-0.6); //up
-        	        }
-        	        else {
-        	        	ballLift.set(0); //down
-        	        	ballLift2.set(0); //up
-        	        }
-        	 }
+        	 
+        } else {
+			double rotation = stick.getY();
+			double speed = stick.getX();
+			//chasisMotors.arcadeDrive(rotation*0.75, speed*-0.75);
+			if (stick.getRawButton(6)) {
+	        	ballLift.set(0.3); //up
+	        	ballLift2.set(0.3); //up
+	        }
+	        else if (stick.getRawButton(4)) {
+	        	ballLift.set(-0.3); //down
+	        	ballLift2.set(-0.3); //up
+	        }
+	        else {
+	        	ballLift.set(0); //down
+	        	ballLift2.set(0); //up
+	        	gogogo = 0;
+	        }
+    	}
+    	if (stick.getRawButton(3)) {
+    		ballLift.set(0); //down
+        	ballLift2.set(0); //up
+    	}
     }
     
     /**
