@@ -48,7 +48,7 @@ public class Robot extends IterativeRobot {
      */
 	Spark ballLift;
 	Spark ballLift2;
-	private int position = 0; // initialize default mode
+	private int afterDefense = 0; // initialize default mode
 	SendableChooser chooser;
 	private int defense = 0; // initialize default mode
 	SendableChooser chooser2;
@@ -61,168 +61,240 @@ public class Robot extends IterativeRobot {
 	Servo verticalCameraServo;
 	AnalogGyro gyro;
 	
-    public void robotInit() {
-    	NetworkTable.initialize();
-    	ballLift = new Spark(6);
-    	ballLift2 = new Spark(5);
-    	chooser = new SendableChooser();
-    	chooser2 = new SendableChooser();
-    	ultrasonic = new Ultrasonic(1, 2);
-    	SmartDashboard.putData("Autonomous Defense Selector", chooser);
-    	chooser.addDefault("Position 1", 1);
-    	chooser.addObject("Position 2", 2);
-    	chooser.addObject("Position 3", 3);
-    	chooser.addObject("Position 4", 4);
-    	chooser.addObject("Position 5", 5);
-    	SmartDashboard.putData("Autonomous Position Selector", chooser2);
-    	chooser2.addDefault("Moat", 1);
-    	chooser2.addObject("Ramp", 2);
-    	chooser2.addObject("Rock Wall", 3);
-    	chooser2.addObject("Rough Terrain", 4);
-    	ultrasonic.setAutomaticMode(true);
-    	horizontalCameraServo = new Servo(8);
-        verticalCameraServo = new Servo(7);
-        CameraServer server = CameraServer.getInstance();
-        server.setQuality(50);
-        gyro = new AnalogGyro(1); 
-        server.startAutomaticCapture("cam0");
-    	chasisMotors = new RobotDrive(0,1,2,3);
-    	stick = new Joystick(0);
+public void robotInit() {
+	NetworkTable.initialize();
+	ballLift = new Spark(4);
+	ballLift2 = new Spark(5);
+	chooser = new SendableChooser();
+	chooser2 = new SendableChooser();
+	ultrasonic = new Ultrasonic(1, 2);
+	SmartDashboard.putData("Autonomous Defense Selector", chooser2);
+	chooser.addDefault("Position 1", 1);
+	chooser.addObject("Position 2", 2);
+	chooser.addObject("Position 3", 3);
+	chooser.addObject("Position 4", 4);
+	chooser.addObject("Position 5", 5);
+	SmartDashboard.putData("Autonomous Position Selector", chooser);
+	chooser2.addDefault("Moat", 1);
+	chooser2.addObject("Ramp", 2);
+	chooser2.addObject("Rock Wall", 3);
+	chooser2.addObject("Rough Terrain", 4);
+	ultrasonic.setAutomaticMode(true);
+	horizontalCameraServo = new Servo(7);
+    verticalCameraServo = new Servo(6);
+    CameraServer server = CameraServer.getInstance();
+    server.setQuality(50);
+    gyro = new AnalogGyro(1); 
+    server.startAutomaticCapture("cam0");
+	chasisMotors = new RobotDrive(0,1,2,3);
+	stick = new Joystick(0);
     }
 
 public void autonomousInit() {
-        position = (int) chooser.getSelected();
-        defense = (int) chooser2.getSelected();
+    defense = (int) chooser.getSelected();
+    afterDefense = (int) chooser2.getSelected();
     }
-    public void autonomousPeriodic() {
-    	gyro.reset();
-    	SmartDashboard.putNumber("Gyroscope Value", gyro.getAngle());
-    	SmartDashboard.putNumber("Ultrasonic Value", ultrasonic.getRangeInches());
-    	double positionAngle = gyro.getAngle();
-    		switch(defense) {
-        		case 1:
-        			System.out.println("defprint");
-        			for (timerCounter = 0; timerCounter < 400; timerCounter++) //sets the limits for the timer
-        			{
-        				if (timerCounter < 200)
-        			{
-    				//chasisMotors.arcadeDrive(-0.65, 0.0); //forward and reset
-        				//garage.set(-1);
-        			}
-        			Timer.delay(0.01);
-        		}
-        		break;
-        		case 2:
-        			for (timerCounter = 0; timerCounter < 400; timerCounter++) //sets the limits for the timer
-        			{
-        				if (timerCounter < 200)
-        				{	
-    				//chasisMotors.arcadeDrive(-0.65, 0.0); //forward and reset
-        				//garage.set(-1);
-        			}
-        			Timer.delay(0.01);
-        		}
-        		break;
-        		case 3:
-        			for (timerCounter = 0; timerCounter < 400; timerCounter++) //sets the limits for the timer
-        			{
-        				if (timerCounter < 200)
-        				{	
-    				//chasisMotors.arcadeDrive(-0.65, 0.0); //forward and reset
-        				//garage.set(-1);
-        			}
-        			Timer.delay(0.01);
-        		}
-        		break;
-        		case 4:
-        			for (timerCounter = 0; timerCounter < 400; timerCounter++) //sets the limits for the timer
-        			{
-        				if (timerCounter < 200)
-        				{	
-    				//chasisMotors.arcadeDrive(-0.65, 0.0); //forward and reset
-        				//garage.set(-1);
-        			}
-        			Timer.delay(0.01);
-        		}
-        		break;
-        		case 5:
-        			for (timerCounter = 0; timerCounter < 400; timerCounter++) //sets the limits for the timer
-        			{
-        				if (timerCounter < 200)
-        				{	
-    				//chasisMotors.arcadeDrive(-0.65, 0.0); //forward and reset
-        				//garage.set(-1);
-        			}
-        			Timer.delay(0.01);
-        		}
-        		break;
-    		}
-    		double afterDefenseAngle = gyro.getAngle();
-			if (afterDefenseAngle >= positionAngle) {
-				chasisMotors.tankDrive(0.0, 1*positionAngle);
-			}
-			else if (afterDefenseAngle <= positionAngle) {
-				chasisMotors.tankDrive(0.0, -1*positionAngle);
-			}
-    	switch(position) {
+public void autonomousPeriodic() {
+	gyro.reset();
+	SmartDashboard.putNumber("Gyroscope Initial Value", gyro.getAngle());
+	SmartDashboard.putNumber("Ultrasonic Value", ultrasonic.getRangeInches());
+	double positionAngle = gyro.getAngle();
+	switch(defense) {
+    	case 1:
+    		System.out.println("defense 1");
+    		chasisMotors.tankDrive(0.75, 0.75);
+    		Timer.delay(0.5);
+    		chasisMotors.tankDrive(0.75, 0.75);
+    		ballLift.set(1);
+    		ballLift2.set(1);
+    		Timer.delay(1);
+    		chasisMotors.tankDrive(0.75, 0.75);
+    		ballLift.set(0);
+    		ballLift2.set(0);
+    		Timer.delay(3);
+   		    break;
+   		case 2:
+   			System.out.println("defense 2");
+   			chasisMotors.tankDrive(0.75, 0.75);
+    		Timer.delay(0.75);
+    		chasisMotors.tankDrive(0.75, 0.75);
+    		ballLift.set(1);
+    		ballLift2.set(1);
+    		Timer.delay(0.5);
+    		chasisMotors.tankDrive(0.75, 0.75);
+    		ballLift.set(0);
+    		ballLift2.set(0);
+    		Timer.delay(3);
+   		    break;
+    	case 3:
+    		System.out.println("defense 3");
+    		chasisMotors.tankDrive(0.75, 0.75);
+    		Timer.delay(0.75);
+    		chasisMotors.tankDrive(0.75, 0.75);
+    		ballLift.set(1);
+    		ballLift2.set(1);
+    		Timer.delay(0.5);
+    		chasisMotors.tankDrive(0.75, 0.75);
+    		ballLift.set(0);
+    		ballLift2.set(0);
+    		Timer.delay(3);
+    		break;
+    	case 4:
+    		System.out.println("defense 4");
+    		chasisMotors.tankDrive(0.75, 0.75);
+    		Timer.delay(0.75);
+    		chasisMotors.tankDrive(0.75, 0.75);
+    		ballLift.set(1);
+    		ballLift2.set(1);
+    		Timer.delay(0.5);
+    		chasisMotors.tankDrive(0.75, 0.75);
+    		ballLift.set(0);
+    		ballLift2.set(0);
+    		Timer.delay(3);
+   		    break;
+		}
+	gyroCalibrate(positionAngle);
+	switch(afterDefense) {
         case 1:
-        	System.out.println("posprint");
-    			Timer.delay(0.01);
-        	break;
+    	    System.out.println("position 1");
+    		chasisMotors.tankDrive(0.75, 0.75);
+    		Timer.delay(3.5);
+    		chasisMotors.tankDrive(-0.66, 0.66);
+    		Timer.delay(0.75);
+    		chasisMotors.tankDrive(0.75, 0.75);
+    		Timer.delay(3.25);
+    		chasisMotors.tankDrive(0.5, 0.5);
+    		ballLift.set(-1);
+    		ballLift2.set(-1);
+    		Timer.delay(0.5);
+    		chasisMotors.tankDrive(0.0, 0.0);
+    		ballLift.set(0);
+    		ballLift2.set(0);
+    	    break;
         case 2:
-        	break;
+    	    System.out.println("position 2");
+    	    chasisMotors.tankDrive(0.75, 0.75);
+    		Timer.delay(3.5);
+    		chasisMotors.tankDrive(-0.66, 0.66);
+    		Timer.delay(0.55);
+    		chasisMotors.tankDrive(0.75, 0.75);
+    		Timer.delay(2.35);
+    		chasisMotors.tankDrive(0.5, 0.5);
+    		ballLift.set(-1);
+    		ballLift2.set(-1);
+    		Timer.delay(0.5);
+    		chasisMotors.tankDrive(0.0, 0.0);
+    		ballLift.set(0);
+    		ballLift2.set(0);
+    	    break;
         case 3:
-        	break;
+    	    System.out.println("position 3");
+    	    chasisMotors.tankDrive(0.75, 0.75);
+    		Timer.delay(2.5);
+    		chasisMotors.tankDrive(-0.66, 0.66);
+    		Timer.delay(0.5);
+    		chasisMotors.tankDrive(0.25, 0.25);
+    		ballLift.set(-1);
+    		ballLift2.set(-1);
+    		Timer.delay(0.5);
+    		chasisMotors.tankDrive(0.0, 0.0);
+    		ballLift.set(0);
+    		ballLift2.set(0);
+    	    break;
         case 4:
-        	break;
-    	}
-    }
-
-
+        	System.out.println("position 3");
+        	chasisMotors.tankDrive(0.75, 0.75);
+    		Timer.delay(2.5);
+    		chasisMotors.tankDrive(-0.66, 0.66);
+    		Timer.delay(0.55);
+    		chasisMotors.tankDrive(0.75, 0.75);
+    		Timer.delay(1.0);
+    		chasisMotors.tankDrive(-0.66, 0.66);
+    		Timer.delay(0.5);
+    		chasisMotors.tankDrive(0.25, 0.25);
+    		ballLift.set(-1);
+    		ballLift2.set(-1);
+    		Timer.delay(0.5);
+    		chasisMotors.tankDrive(0.0, 0.0);
+    		ballLift.set(0);
+    		ballLift2.set(0);
+    	    break;
+        case 5:
+    	    System.out.println("position 5");
+    	    chasisMotors.tankDrive(0.75, 0.75);
+    		Timer.delay(3);
+    		chasisMotors.tankDrive(0.66, -0.66);
+    		Timer.delay(0.55);
+    		chasisMotors.tankDrive(0.5, 0.5);
+    		ballLift.set(-1);
+    		ballLift2.set(-1);
+    		Timer.delay(0.5);
+    		chasisMotors.tankDrive(0.0, 0.0);
+    		ballLift.set(0);
+    		ballLift2.set(0);
+    	    break;
+	}
+}
     /**
      * This function is called periodically during operator control
      */
-    public void teleopPeriodic() {
-    	if (stick.getRawButton(6)) { 
-    		chasisMotors.tankDrive(stick.getRawAxis(2)*1.00, stick.getRawAxis(5)*1.00);
-        } 
-    	else {
-			chasisMotors.arcadeDrive(stick.getRawAxis(2)*0.75, stick.getRawAxis(5)*0.75);
-        }
-    	if (Math.abs(stick.getRawAxis(3)) > .1) {
-	        	ballLift.set(stick.getRawAxis(3)*-1.00); //up
-	        	ballLift2.set(stick.getRawAxis(3)*-1.00); //up
-    	}
-    	if (Math.abs(stick.getRawAxis(2)) > .1) {
-	        	ballLift.set(stick.getRawAxis(2)*1.00); //up
-	        	ballLift2.set(stick.getRawAxis(2)*1.00); //up
-    	}
-	        	 if (stick.getRawAxis(6) == 1) {
-	             	horizontalCameraServo.set(0.25);
-	             }
-	             else if (stick.getRawAxis(6) == -1) {
-	             	horizontalCameraServo.set(0);
-	             }
-	             else {
-	             		horizontalCameraServo.set(0.5);
-	             	}
-	             
-	             if (stick.getRawAxis(7) == 1) {
-	             	verticalCameraServo.set(1.0);
-	             }
-	             else if (stick.getRawAxis(7) == -1) {
-	             	verticalCameraServo.set(0.7);
-	             	}
-	             else {
-	         		verticalCameraServo.set(0.85);
-	         	}
+public void gyroCalibrate(double positionAngle) {
+	double afterDefenseAngle = gyro.getAngle();
+	if (afterDefenseAngle > positionAngle) {
+		chasisMotors.tankDrive(0.0, 1*positionAngle);
+		Timer.delay(0.5);
+		chasisMotors.tankDrive(0,0);
+	}
+	else if (afterDefenseAngle < positionAngle) {
+		chasisMotors.tankDrive(0.0, -1*positionAngle);
+		Timer.delay(0.5);
+		chasisMotors.tankDrive(0,0);
+	}
+}
+public void teleopPeriodic() {
+	gyro.reset();
+	SmartDashboard.putNumber("Gyroscopic Realtime Value", gyro.getAngle());
+	if (stick.getRawButton(6)) { 
+		chasisMotors.tankDrive(stick.getRawAxis(1)*-1.00, stick.getRawAxis(5)*-1.00);
+    } 
+	else {
+		chasisMotors.tankDrive(stick.getRawAxis(1)*-0.75, stick.getRawAxis(5)*-0.75);
     }
+	if (Math.abs(stick.getRawAxis(3)) > .1) {
+        ballLift.set(stick.getRawAxis(3)*-1.00); //up
+       	ballLift2.set(stick.getRawAxis(3)*-1.00); //up
+	}
+	else if (Math.abs(stick.getRawAxis(2)) > .1) {
+       	ballLift.set(stick.getRawAxis(2)*1.00); //up
+       	ballLift2.set(stick.getRawAxis(2)*1.00); //up
+	}
+	else {
+   	    ballLift.set(0);
+   	    ballLift2.set(0);
+    }
+	if (stick.getRawAxis(8) == 1) {
+     	horizontalCameraServo.set(0.25);
+    }
+    else if (stick.getRawAxis(8) == -1) {
+    	horizontalCameraServo.set(0);
+    }
+    else {
+   		horizontalCameraServo.set(0.5);
+    }
+	if (stick.getRawAxis(7) == 1) {
+     	verticalCameraServo.set(1.0);
+	}
+	else if (stick.getRawAxis(7) == -1) {
+    	verticalCameraServo.set(0.7);
+    }
+    else {
+ 		verticalCameraServo.set(0.85);
+    }    	 
+}
     
     /**
      * This function is called periodically during test mode
      */
-    public void testPeriodic() {
-   
-    }
-    
+public void testPeriodic() {  
+    }    
 }
