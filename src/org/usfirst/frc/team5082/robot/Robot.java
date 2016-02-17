@@ -50,7 +50,8 @@ public class Robot extends IterativeRobot {
 	Spark ballLift2;
 	private int afterDefense = 0; // initialize default mode
 	SendableChooser chooser;
-	private int defense = 0; // initialize default mode
+	private int defense = 0;// initialize default mode
+	private int slowStop = 0;
 	SendableChooser chooser2;
 	int timerCounter;
 	double Kp = 0.00;
@@ -60,6 +61,7 @@ public class Robot extends IterativeRobot {
 	Servo horizontalCameraServo;
 	Servo verticalCameraServo;
 	AnalogGyro gyro;
+	
 	
 public void robotInit() {
 	NetworkTable.initialize();
@@ -80,8 +82,8 @@ public void robotInit() {
 	chooser2.addObject("Rock Wall", 3);
 	chooser2.addObject("Rough Terrain", 4);
 	ultrasonic.setAutomaticMode(true);
-	horizontalCameraServo = new Servo(7);
-    verticalCameraServo = new Servo(6);
+	horizontalCameraServo = new Servo(9);
+    verticalCameraServo = new Servo(8);
     CameraServer server = CameraServer.getInstance();
     server.setQuality(50);
     gyro = new AnalogGyro(1); 
@@ -263,38 +265,53 @@ public void teleopPeriodic() {
 	if (Math.abs(stick.getRawAxis(3)) > .1) {
         ballLift.set(stick.getRawAxis(3)*-1.00); //up
        	ballLift2.set(stick.getRawAxis(3)*-1.00); //up
+       	slowStop = 2;
 	}
 	else if (Math.abs(stick.getRawAxis(2)) > .1) {
        	ballLift.set(stick.getRawAxis(2)*1.00); //up
        	ballLift2.set(stick.getRawAxis(2)*1.00); //up
+       	slowStop = 1;
 	}
 	else {
-   	    ballLift.set(0);
-   	    ballLift2.set(0);
+		if (slowStop == 1) {
+			ballLift.set(.50);
+	   	    ballLift2.set(.50);
+	   	    Timer.delay(.2);
+	   	    slowStop = 0;
+		}
+		else if (slowStop == 2) {
+			ballLift.set(-.50);
+	   	    ballLift2.set(-.50);
+	   	    Timer.delay(.2);
+	   	    slowStop = 0;
+		}
+		else if (slowStop == 0) {
+   	        ballLift.set(0);
+   	        ballLift2.set(0);
     }
-	if (stick.getRawAxis(8) == 1) {
-     	horizontalCameraServo.set(0.25);
+	if (stick.getRawButton(3)) {
+    	horizontalCameraServo.setAngle(0.25);
     }
-    else if (stick.getRawAxis(8) == -1) {
-    	horizontalCameraServo.set(0);
+    else if (stick.getRawButton(2)) {
+    	horizontalCameraServo.setAngle(0);
     }
     else {
-   		horizontalCameraServo.set(0.5);
+    		horizontalCameraServo.setAngle(0.5);
+    	}
+    if (stick.getRawButton(4)) {
+    	verticalCameraServo.set(0.9);
     }
-	if (stick.getRawAxis(7) == 1) {
-     	verticalCameraServo.set(1.0);
+    else if (stick.getRawButton(1)) {
+    	verticalCameraServo.setAngle(0.3);
+    	}
+    else {
+		verticalCameraServo.setAngle(0.6);
 	}
-	else if (stick.getRawAxis(7) == -1) {
-    	verticalCameraServo.set(0.7);
-    }
-    else {
- 		verticalCameraServo.set(0.85);
-    }    	 
-}
-    
+	}
+}  	 
     /**
      * This function is called periodically during test mode
      */
-public void testPeriodic() {  
+public void testPeriodic() { 
     }    
 }
